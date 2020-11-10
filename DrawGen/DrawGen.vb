@@ -1,6 +1,6 @@
-﻿'Requires AutoCAD 2012 64-bit installed
+﻿'Requires AutoCAD 2015 64-bit installed
 'Requires Microsoft Office 2010 64-bit installed
-'Requires Microsoft Visual Basic 2010 Express installed
+'Requires Microsoft Visual Basic 2017 installed
 'Requires References
 '   COM  Microsoft ActiveX Data Objects 2.8 Library
 '   File C:\Program Files\Common Files\Autodesk Shared\acax18enu.tlb
@@ -8,6 +8,8 @@
 '
 '
 '   Added Custom Connection Code 6/24/2015 Ed Jackson
+
+' Adding SharePoint are Config Versioning.
 
 Option Explicit On
 
@@ -91,6 +93,7 @@ Module DrawGen
     Dim ModelCallout As String              'Variable to accomodate the extended model number
     Dim OEMBlock As String                  'Path to title block drawing
     Dim OEMCopy As String                   'Path to copyright drawing
+    Dim ConfigVersion As String             'Configuration run iterarion
 
 
     Sub Main()
@@ -313,7 +316,7 @@ Err_LoadJobFile:
         sTrace = "FileTranslate: Enter" : LogDebug(sTrace)
 
         On Error GoTo Err_FileTranslate
-
+        ConfigVersion = "Nothing"
         TranslateCount = 4
         ReDim TranslatedConfig(TranslateCount)
 
@@ -456,6 +459,17 @@ Err_LoadJobFile:
                             If TransTable.Fields("Replace").Value.ToString <> "none" Then Call ApplyReplace(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
                             If TransTable.Fields("Append").Value.ToString <> "none" Then Call ApplyAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
                             If TransTable.Fields("CheckFor").Value.ToString <> "none" Then Call CheckForAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                        End If
+                        '**End Added
+
+                        '**Added 11/5/2020
+                        If TransTable.Fields("ConfigType").Value.ToString = "ConfigRev" Then
+                            TranslatedConfig(TranslateCount) = "ConfigRev=" & TransTable.Fields("Prefix").Value.ToString & Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
+                            If TransTable.Fields("Replace").Value.ToString <> "none" Then Call ApplyReplace(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                            If TransTable.Fields("Append").Value.ToString <> "none" Then Call ApplyAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                            If TransTable.Fields("CheckFor").Value.ToString <> "none" Then Call CheckForAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+
+                            ConfigVersion = mid(TranslatedConfig(TranslateCount),LineLen(TranslatedConfig(TranslateCount))-10)
                         End If
                         '**End Added
 
@@ -2747,7 +2761,14 @@ Err_getdims:
                             j = 0
                             For Each AcadAttribute In varAttributes
                                 If varAttributes(j).TagString = "ORDER" Then varAttributes(j).TextString = AryConfigFile(1)
-                                If varAttributes(j).TagString = "DATE" Then varAttributes(j).TextString = Now()
+                                'added for config version 11/10/2020  -ejj
+                                If varAttributes(j).TagString = "DATE" Then
+                                    If ConfigVersion = "Nothing" Then
+                                        varAttributes(j).TextString = Now()  
+                                    Else
+                                       varAttributes(j).TextString = ConfigVersion
+                                    End If
+                                End if
                                 If varAttributes(j).TagString = "DESC" Then varAttributes(j).TextString = strCustData
                                 If varAttributes(j).TagString = "DWGNUM" Then
                                     Select Case i
