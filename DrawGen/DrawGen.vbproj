@@ -198,7 +198,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="AutoCAD">
-      <Guid>{D5C3CB6F-AA0A-4D45-B02D-CF2974EFD4BE}</Guid>
+      <Guid>{4E3F492A-FB57-4439-9BF0-1567ED84A3A9}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
@@ -207,7 +207,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="AXDBLib">
-      <Guid>{76138497-2E13-4526-AE88-1CB012FBF43A}</Guid>
+      <Guid>{594E795C-1019-46CC-969B-121BE08917B2}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
@@ -225,7 +225,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Icon.ico" />
   </ItemGroup>

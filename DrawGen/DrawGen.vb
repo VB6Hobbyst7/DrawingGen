@@ -462,14 +462,14 @@ Err_LoadJobFile:
                         End If
                         '**End Added
 
-                        '**Added 11/5/2020
+                        '**Added 11/5/2020cOM
                         If TransTable.Fields("ConfigType").Value.ToString = "ConfigRev" Then
-                            TranslatedConfig(TranslateCount) = "ConfigRev=" & TransTable.Fields("Prefix").Value.ToString & Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
+                            TranslatedConfig(TranslateCount) = "ConfigRev=" & Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
                             If TransTable.Fields("Replace").Value.ToString <> "none" Then Call ApplyReplace(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
                             If TransTable.Fields("Append").Value.ToString <> "none" Then Call ApplyAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
                             If TransTable.Fields("CheckFor").Value.ToString <> "none" Then Call CheckForAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
 
-                            ConfigVersion = mid(TranslatedConfig(TranslateCount),LineLen(TranslatedConfig(TranslateCount))-10)
+                            ConfigVersion = Mid(TranslatedConfig(TranslateCount), Len(TranslatedConfig(TranslateCount)) - 10)
                         End If
                         '**End Added
 
