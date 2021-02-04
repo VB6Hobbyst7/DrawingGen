@@ -2893,7 +2893,7 @@ Err_getdims:
 
                 sTrace = "ConfigureDwg: C2W Command is:" &  C2WCommand : LogDebug(sTrace)
                 
-                dwgfile.sendcommand (C2WCommand)
+                IF LEFT(AryConfigFile(1),1) = "U" THEN dwgfile.sendcommand (C2WCommand)
                 'CAD2WIN end
 
                 dwgfile.Close(False)
