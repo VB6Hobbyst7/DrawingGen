@@ -1,6 +1,7 @@
 ﻿'Requires AutoCAD 2015 64-bit installed
 'Requires Microsoft Office 2010 64-bit installed
 'Requires Microsoft Visual Basic 2017 installed
+'Requires Cad2Win License install ... 1/25/2021
 'Requires References
 '   COM  Microsoft ActiveX Data Objects 2.8 Library
 '   File C:\Program Files\Common Files\Autodesk Shared\acax18enu.tlb
@@ -9,7 +10,7 @@
 '
 '   Added Custom Connection Code 6/24/2015 Ed Jackson
 
-' Adding SharePoint are Config Versioning.
+' Adding SharePoint and Config Versioning.
 
 Option Explicit On
 
@@ -94,6 +95,8 @@ Module DrawGen
     Dim OEMBlock As String                  'Path to title block drawing
     Dim OEMCopy As String                   'Path to copyright drawing
     Dim ConfigVersion As String             'Configuration run iterarion
+    Dim SharePointSite As String            'Site name for the SharePOint intgration
+    
 
 
     Sub Main()
@@ -230,6 +233,12 @@ Module DrawGen
         '**Added 6/2/2015
         ReDim CustomItems(5, 0)
         '**End Added
+
+        '***Added 2/4/2021
+        SharePointSite = "https://bacglobal.sharepoint.com/sites/AutocadTEST/Autocad%20TEST/"
+
+        '***End Added
+
 
         sTrace = "Initialize: Exit" : LogDebug(sTrace)
 
@@ -2657,6 +2666,7 @@ Err_getdims:
         Dim CopySave As String
         Dim AcadGrp As AcadGroup                     '3.0.2.0
         Dim IdxGrp As Integer                        '3.0.2.0
+        Dim C2WCommand As String           'Added 2/4/2021 -EJJ C2W intgration
 
         sTrace = "ConfigureDwg: Enter" : LogDebug(sTrace)
 
@@ -2747,7 +2757,10 @@ Err_getdims:
                 Call SetNotes(i, dwgfile)
                 Err.Clear()
                 sTrace = "ConfigureDwg: Call InsertTitleBlock" : LogDebug(sTrace)
-                If OEMBlock <> "" Then InsertTitleBlock(sDataPath & OEMBlock, sDataPath & OEMCopy, dwgfile)
+
+                C2WCommand = "C2W_SAVEAS2" & vbCr & SharePointSite & strDwgFileName & ".dwg" & vbCr & "1" & vbCr & "AutoSub Request" & vbCr ' Added 2/4/2021 -EJJ C2W Int.
+
+                If OEMBlock <> "" Then InsertTitleBlock(sDataPath & OEMBlock, sDataPath & OEMCopy, dwgfile, C2WCommand) 'Added C2W argument 2/4/2021 -Ejj
                 OEMBlock = TitleSave
                 OEMCopy = CopySave
                 'iterates through all the block refrences
@@ -2872,6 +2885,17 @@ Err_getdims:
                 End Select
                 LogDrawing(strDwgFileName & "." & FileType)
                 sTrace = "ConfigureDwg: Close Drawing file" : LogDebug(sTrace)
+
+                'CAD2WIN addition starts here: EJJ 1/25/2021
+                
+                C2WCommand = C2WCommand & ";Config Version|" & ConfigVersion & ";BAC Job Number|" _
+                            & mid(AryConfigFile(1),1,8) & ";BAC Line Number|" & mid(AryConfigFile(1),9,2) & vbCr
+
+                sTrace = "ConfigureDwg: C2W Command is:" &  C2WCommand : LogDebug(sTrace)
+                
+                dwgfile.sendcommand (C2WCommand)
+                'CAD2WIN end
+
                 dwgfile.Close(False)
             End If
         Next i
@@ -3291,7 +3315,7 @@ Err_StandardNotes:
 
 
 
-    Sub InsertTitleBlock(OEMborder As String, OEMCopyright As String, ByRef Dwg As AcadDocument)
+    Sub InsertTitleBlock(OEMborder As String, OEMCopyright As String, ByRef Dwg As AcadDocument, ByRef C2WCommand As String)  'Added C2W argument 2/4/2021 -Ejj
 
         Dim i, j As Integer
         Dim Border As AcadBlockReference
@@ -3348,6 +3372,8 @@ Err_StandardNotes:
                 j = j + 1
             Next
         End If
+
+        C2WCommand = C2WCommand &  "Description 1|" & StrModel1 & ";Description 2|" & StrModel2 'added 2/4/2021 for C2W  -EJJ  
 
         CopyOrigin(0) = OldCopyBlock.InsertionPoint(0)
         CopyOrigin(1) = OldCopyBlock.InsertionPoint(1)
