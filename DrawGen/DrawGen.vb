@@ -18,8 +18,8 @@ Option Explicit On
 Imports AutoCAD
 'Imports Autodesk.AutoCAD.Interop.Common
 Imports System.IO
-Imports System.Data
-Imports System.Data.OleDb
+'Imports System.Data
+'Imports System.Data.OleDb
 Imports System.Threading
 Imports ADODB
 'test comment
@@ -2725,8 +2725,6 @@ Err_getdims:
                     GoTo Err_ConfigureDwg
                 End Try
 
-                'While Not AcadApp.GetAcadState.IsQuiescent
-                'End While
                 Thread.Sleep(10000)
 
                 sTrace = "ConfigureDwg: dwgfile.ActiveLayout properties" : LogDebug(sTrace)
@@ -2758,7 +2756,7 @@ Err_getdims:
                 Err.Clear()
                 sTrace = "ConfigureDwg: Call InsertTitleBlock" : LogDebug(sTrace)
 
-                C2WCommand = "C2W_SAVEAS2" & vbCr & SharePointSite & strDwgFileName & ".dwg" & vbCr & "1" & vbCr & "AutoSub Request" & vbCr ' Added 2/4/2021 -EJJ C2W Int.
+                C2WCommand = "1" & vbCr & "AutoSub Request" & vbCr ' Added 2/4/2021 -EJJ C2W Int.
 
                 If OEMBlock <> "" Then InsertTitleBlock(sDataPath & OEMBlock, sDataPath & OEMCopy, dwgfile, C2WCommand) 'Added C2W argument 2/4/2021 -Ejj
                 OEMBlock = TitleSave
@@ -2884,18 +2882,17 @@ Err_getdims:
                         dwgfile.SaveAs(sOutPath & strDwgFileName & ".dwg")
                 End Select
                 LogDrawing(strDwgFileName & "." & FileType)
-                sTrace = "ConfigureDwg: Close Drawing file" : LogDebug(sTrace)
 
                 'CAD2WIN addition starts here: EJJ 1/25/2021
-                
-                C2WCommand = C2WCommand & ";Config Version|" & ConfigVersion & ";BAC Job Number|" _
-                            & mid(AryConfigFile(1),1,8) & ";BAC Line Number|" & mid(AryConfigFile(1),9,2) & vbCr
+
+                C2WCommand = "C2W_SAVEAS2" & vbCr & SharePointSite & strDwgFileName & ".dwg" & vbCr & C2WCommand & ";Config Version|" & ConfigVersion & ";BAC Job Number|" _
+                            & Mid(AryConfigFile(1), 1, 8) & ";BAC Line Number|" & Mid(AryConfigFile(1), 9, 2) & vbCr
 
                 sTrace = "ConfigureDwg: C2W Command is:" &  C2WCommand : LogDebug(sTrace)
-                
-                IF LEFT(AryConfigFile(1),1) = "U" THEN dwgfile.sendcommand (C2WCommand)
-                'CAD2WIN end
 
+                'IF LEFT(AryConfigFile(1),1) = "U" THEN dwgfile.sendcommand (C2WCommand)
+                'CAD2WIN end
+                sTrace = "ConfigureDwg: Close Drawing file" : LogDebug(sTrace)
                 dwgfile.Close(False)
             End If
         Next i
@@ -3121,7 +3118,7 @@ Err_SetLayers:
         Dim STnote As String
         Dim lngVersion As Double
         Dim lngTempver As Double
-        Dim strVer As String
+        Dim strVer As String = ""
         Dim STNoteArray() As String
         Dim stnoteCnt As Integer
         Dim DimGroupIdx As Integer                  '3.0.2.0
