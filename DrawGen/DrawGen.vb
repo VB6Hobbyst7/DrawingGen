@@ -2766,7 +2766,7 @@ Err_getdims:
                                     If ConfigVersion = "Nothing" Then
                                         varAttributes(j).TextString = Now()  
                                     Else
-                                       varAttributes(j).TextString = ConfigVersion
+                                       varAttributes(j).TextString = Now() & "  " & ConfigVersion
                                     End If
                                 End if
                                 If varAttributes(j).TagString = "DESC" Then varAttributes(j).TextString = strCustData
