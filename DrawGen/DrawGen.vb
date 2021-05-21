@@ -1378,9 +1378,9 @@ Err_AccesGet:
                                             For j = 1 To Len(Custom.Fields.Item("Dims").Value.ToString)
                                                 If Mid(Custom.Fields.Item("Dims").Value.ToString, j, 1) = "[" Then StartMark = j
                                                 If Mid(Custom.Fields.Item("Dims").Value.ToString, j, 1) = "]" Then
-                                                    Accessories(31, Accesscnt) = Accessories(31, Accesscnt) & Mid(Custom.Fields.Item("Dims").Value.ToString, _
-                                                                                    StartMark, j - StartMark) & "=" & FormatDimText(DimstringA, _
-                                                                                    Custom.Fields.Item("Seperator").Value.ToString, Custom.Fields.Item("Dim_Type").Value.ToString, _
+                                                    Accessories(31, Accesscnt) = Accessories(31, Accesscnt) & Mid(Custom.Fields.Item("Dims").Value.ToString,
+                                                                                    StartMark, j - StartMark) & "=" & FormatDimText(DimstringA,
+                                                                                    Custom.Fields.Item("Seperator").Value.ToString, Custom.Fields.Item("Dim_Type").Value.ToString,
                                                                                     Custom.Fields.Item("Custom_Prefix").Value.ToString) & "]"
                                                 End If
                                             Next
@@ -1421,6 +1421,7 @@ Err_AccesGet:
                                         Accessories(30, Accesscnt) = 0
                                         Accessories(32, Accesscnt) = Custom.Fields.Item("Prefix").Value.ToString
 
+
                                         Exit Do
                                     End If
                                 End If
@@ -1432,6 +1433,16 @@ Err_AccesGet:
                         Exit Do
                     End If
                 Loop
+
+                sTrace = "CustomGet: " & "Added Accessories(0," & Accesscnt & ") = " & Accessories(0, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(1," & Accesscnt & ") = " & Accessories(1, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(5," & Accesscnt & ") = " & Accessories(5, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(6," & Accesscnt & ") = " & Accessories(6, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(7," & Accesscnt & ") = " & Accessories(7, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(8," & Accesscnt & ") = " & Accessories(8, Accesscnt) : LogDebug(sTrace)
+                sTrace = "CustomGet: " & "Added Accessories(32," & Accesscnt & ") = " & Accessories(32, Accesscnt) : LogDebug(sTrace)
+
+
                 '        Acces.Close
                 'adds another to the accessory count
                 Accesscnt = Accesscnt + 1
@@ -2127,7 +2138,7 @@ Err_FlowSet:
         End If
 
         'runs through the accesory array and gathers the data for accesories
-        sTrace = "DataCompile: Set data for accessories" : LogDebug(sTrace)
+        sTrace = "DataCompile: Set data for accessories of count:" & Accesscnt - 1 : LogDebug(sTrace)
         For i = 0 To Accesscnt - 1
             LineLen = Len(Accessories(5, i))
             If Accessories(0, i) <> "none" Then
@@ -2205,10 +2216,10 @@ Err_FlowSet:
                     End If
                 End If
             End If
-            sTrace = "Finished Accessory " & i : LogDebug(sTrace)
+            sTrace = "DataCompile: Finished Accessory " & i : LogDebug(sTrace)
         Next i
 
-        sTrace = "Atempting to clear Accessories Array" : LogDebug(sTrace)
+        sTrace = "DataCompile: Atempting to clear Accessories Array" : LogDebug(sTrace)
         For i = 0 To Accesscnt - 1
             For j = 0 To 32
                 Accessories(j, i) = ""
