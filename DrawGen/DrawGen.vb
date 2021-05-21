@@ -464,12 +464,12 @@ Err_LoadJobFile:
 
                         '**Added 11/5/2020cOM
                         If TransTable.Fields("ConfigType").Value.ToString = "ConfigRev" Then
-                            TranslatedConfig(TranslateCount) = "ConfigRev=" & Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
-                            If TransTable.Fields("Replace").Value.ToString <> "none" Then Call ApplyReplace(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
-                            If TransTable.Fields("Append").Value.ToString <> "none" Then Call ApplyAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
-                            If TransTable.Fields("CheckFor").Value.ToString <> "none" Then Call CheckForAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                            TranslatedConfig(TranslateCount) = "ConfigVer=" & Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
+                            'If TransTable.Fields("Replace").Value.ToString <> "none" Then Call ApplyReplace(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                            'If TransTable.Fields("Append").Value.ToString <> "none" Then Call ApplyAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
+                            'If TransTable.Fields("CheckFor").Value.ToString <> "none" Then Call CheckForAppend(TranslatedConfig(TranslateCount), TranslatedConfig(TranslateCount), TransTable)
 
-                            ConfigVersion = Mid(TranslatedConfig(TranslateCount), Len(TranslatedConfig(TranslateCount)) - 10)
+                            ConfigVersion = Mid(AryConfigFile(i).ToString, 31, ConfigFileLen - 30)
                         End If
                         '**End Added
 
@@ -2205,8 +2205,10 @@ Err_FlowSet:
                     End If
                 End If
             End If
+            sTrace = "Finished Accessory " & i : LogDebug(sTrace)
         Next i
 
+        sTrace = "Atempting to clear Accessories Array" : LogDebug(sTrace)
         For i = 0 To Accesscnt - 1
             For j = 0 To 32
                 Accessories(j, i) = ""
@@ -2766,7 +2768,7 @@ Err_getdims:
                                     If ConfigVersion = "Nothing" Then
                                         varAttributes(j).TextString = Now()  
                                     Else
-                                       varAttributes(j).TextString = Now() & "  ConfigVer=" & ConfigVersion
+                                        varAttributes(j).TextString = Now() & "  ConfigVer=" & ConfigVersion
                                     End If
                                 End if
                                 If varAttributes(j).TagString = "DESC" Then varAttributes(j).TextString = strCustData
